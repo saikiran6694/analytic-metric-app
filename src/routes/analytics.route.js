@@ -9,16 +9,16 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   name: Events
+ *   name: analytics
  *   description: Event collection and analytics APIs
  */
 
 /**
  * @swagger
- * /events/collect:
+ * /analytics/collect:
  *   post:
  *     summary: Collect an event from a registered application
- *     tags: [Events]
+ *     tags: [Analytics]
  *     security:
  *       - ApiKeyAuth: []
  *     requestBody:
@@ -87,15 +87,41 @@ const router = Router();
  *                       type: string
  *                       format: date-time
  *                       example: 2025-11-13T10:00:00Z
+ *       400:
+ *         description: Bad Request — invalid input or app already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: App with this URL already registered for this user
+ *       500:
+ *         description: Internal Server Error — unexpected failure during registration
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.post("/collect", eventRateLimiter, authenticate, validateEvent, eventCollectController);
 
 /**
  * @swagger
- * /events/event-summary:
+ * /analytics/event-summary:
  *   get:
  *     summary: Fetch event summary for a specific app or event type
- *     tags: [Events]
+ *     tags: [Analytics]
  *     security:
  *       - ApiKeyAuth: []
  *     parameters:
@@ -147,15 +173,41 @@ router.post("/collect", eventRateLimiter, authenticate, validateEvent, eventColl
  *                     top_event_types:
  *                       page_view: 250
  *                       button_click: 90
+ *       400:
+ *         description: Bad Request — invalid input or app already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: App with this URL already registered for this user
+ *       500:
+ *         description: Internal Server Error — unexpected failure during registration
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.get("/event-summary", analyticsRateLimiter, authenticate, eventSummaryController);
 
 /**
  * @swagger
- * /events/user-stats:
+ * /analytics/user-stats:
  *   get:
  *     summary: Retrieve per-user statistics on collected events
- *     tags: [Events]
+ *     tags: [Analytics]
  *     security:
  *       - ApiKeyAuth: []
  *     parameters:
@@ -197,6 +249,32 @@ router.get("/event-summary", analyticsRateLimiter, authenticate, eventSummaryCon
  *                     total_users: 85
  *                     average_events_per_user: 4
  *                     active_users_last_7_days: 23
+ *       400:
+ *         description: Bad Request — invalid input or app already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: App with this URL already registered for this user
+ *       500:
+ *         description: Internal Server Error — unexpected failure during registration
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.get("/user-stats", analyticsRateLimiter, authenticate, eventUserStatsController);
 
