@@ -1,10 +1,12 @@
 import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
 import { corsConfig } from "./config/cors.config.js";
 import { env } from "./config/env.config.js";
 import authRoutes from "./routes/auth.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
+import { swaggerSpec } from "./config/swagger.config.js";
 
 const app = express();
 const PORT = env.PORT;
@@ -12,6 +14,8 @@ const PORT = env.PORT;
 app.use(helmet());
 app.use(express.json());
 app.use(corsConfig());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/analytics", analyticsRoutes);

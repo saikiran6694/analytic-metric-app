@@ -68,6 +68,7 @@ export const eventSummaryController = async (req, res) => {
 
     res.status(HTTPSTATUS.OK).json({
       success: true,
+      message: "Event Summary fetched successfully",
       data: summary,
     });
   } catch (error) {
@@ -107,6 +108,7 @@ export const eventUserStatsController = async (req, res) => {
 
     res.status(HTTPSTATUS.OK).json({
       success: true,
+      message: "User statistics on event fetched successfully",
       data: stats,
     });
   } catch (error) {
