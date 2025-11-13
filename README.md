@@ -355,7 +355,9 @@ WHERE metadata->>'browser' = 'Chrome';
 
 ## 🚀 Deployment
 
-### Deploy to Render - [Link] (https://analytic-metric-app.onrender.com/api-docs)
+### 🚀 Deployment
+**API Documentation:** [https://analytic-metric-app.onrender.com/api-docs](https://analytic-metric-app.onrender.com/api-docs)
+
 
 1. Connect GitHub repository
 2. Add PostgreSQL database
