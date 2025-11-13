@@ -3,7 +3,8 @@ import express from "express";
 import helmet from "helmet";
 import { corsConfig } from "./config/cors.config.js";
 import { env } from "./config/env.config.js";
-import authRouter from "./routes/auth.route.js";
+import authRoutes from "./routes/auth.route.js";
+import analyticsRoutes from "./routes/analytics.route.js";
 
 const app = express();
 const PORT = env.PORT;
@@ -12,7 +13,8 @@ app.use(helmet());
 app.use(express.json());
 app.use(corsConfig());
 
-app.use("/api/auth", authRouter);
+app.use("/api/auth", authRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
