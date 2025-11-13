@@ -20,7 +20,6 @@ const options = {
         description: "Local development server",
       },
     ],
-
     components: {
       securitySchemes: {
         ApiKeyAuth: {

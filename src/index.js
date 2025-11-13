@@ -7,6 +7,7 @@ import { env } from "./config/env.config.js";
 import authRoutes from "./routes/auth.route.js";
 import analyticsRoutes from "./routes/analytics.route.js";
 import { swaggerSpec } from "./config/swagger.config.js";
+import { apiKeyManagementRateLimiter } from "./config/rateLimit.config.js";
 
 const app = express();
 const PORT = env.PORT;
@@ -17,7 +18,7 @@ app.use(corsConfig());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", apiKeyManagementRateLimiter, authRoutes);
 app.use("/api/analytics", analyticsRoutes);
 
 // Health check endpoint

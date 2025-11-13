@@ -2,6 +2,7 @@ import { Router } from "express";
 import { validateEvent } from "../middleware/eventValidation.middleware.js";
 import { eventCollectController, eventSummaryController, eventUserStatsController } from "../controller/event.controller.js";
 import { authenticate } from "../middleware/authenticate.middleware.js";
+import { analyticsRateLimiter, eventRateLimiter } from "../config/rateLimit.config.js";
 
 const router = Router();
 
@@ -87,7 +88,7 @@ const router = Router();
  *                       format: date-time
  *                       example: 2025-11-13T10:00:00Z
  */
-router.post("/collect", authenticate, validateEvent, eventCollectController);
+router.post("/collect", eventRateLimiter, authenticate, validateEvent, eventCollectController);
 
 /**
  * @swagger
@@ -147,7 +148,7 @@ router.post("/collect", authenticate, validateEvent, eventCollectController);
  *                       page_view: 250
  *                       button_click: 90
  */
-router.get("/event-summary", authenticate, eventSummaryController);
+router.get("/event-summary", analyticsRateLimiter, authenticate, eventSummaryController);
 
 /**
  * @swagger
@@ -197,6 +198,6 @@ router.get("/event-summary", authenticate, eventSummaryController);
  *                     average_events_per_user: 4
  *                     active_users_last_7_days: 23
  */
-router.get("/user-stats", authenticate, eventUserStatsController);
+router.get("/user-stats", analyticsRateLimiter, authenticate, eventUserStatsController);
 
 export default router;
