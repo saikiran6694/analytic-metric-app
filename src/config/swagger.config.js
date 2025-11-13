@@ -1,9 +1,13 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import path from "path";
 import { fileURLToPath } from "url";
+import { env } from "./env.config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const isProduction = env.NODE_ENV === "production";
+const serverUrl = isProduction ? `${env.RENDER_PRODUCTION_URL}/api` : `http://localhost:${env.PORT}/api`;
 
 const options = {
   definition: {
@@ -15,8 +19,8 @@ const options = {
     },
     servers: [
       {
-        url: `https://analytic-metric-app.onrender.com/api`,
-        description: "Local development server",
+        url: serverUrl,
+        description: isProduction ? "Render production server" : "Local development server",
       },
     ],
     components: {
@@ -29,14 +33,8 @@ const options = {
         },
       },
     },
-
-    security: [
-      {
-        ApiKeyAuth: [],
-      },
-    ],
+    security: [{ ApiKeyAuth: [] }],
   },
-
   apis: [path.join(__dirname, "../routes/*.js")],
 };
 
