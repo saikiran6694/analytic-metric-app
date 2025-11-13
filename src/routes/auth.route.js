@@ -63,6 +63,32 @@ const router = Router();
  *                       type: string
  *                       format: date-time
  *                       example: 2025-11-13T10:54:33.317Z
+ *       400:
+ *         description: Bad Request — invalid input or app already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: App with this URL already registered for this user
+ *       500:
+ *         description: Internal Server Error — unexpected failure during registration
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.post("/register", validateRegister, registerAppController);
 
@@ -176,14 +202,37 @@ router.post("/api-key", validatGetAPIKey, getApiKeyController);
  *                       example: 7fab1e8c-0252-4174-bc61-1475ad8cdecb
  *                     key_prefix:
  *                       type: string
- *                       example: sbx_ZrEBuD6vz0Y****************************************************************
+ *                       example: sbx_ZrEBuD6vz0Y*********************
  *                     revoked_at:
  *                       type: string
  *                       format: date-time
  *                       example: 2025-11-13T17:46:04.264Z
- *                     message:
- *                       type: string
- *                       example: API key successfully revoked
+ *       400:
+ *         description: Bad Request — invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Invalid API key or already revoked
+ *       500:
+ *         description: Internal Server Error — unexpected failure during revocation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.post("/revoke", validateRevoke, revokeApiKeyController);
 
@@ -207,8 +256,8 @@ router.post("/revoke", validateRevoke, revokeApiKeyController);
  *                 type: string
  *                 example: 7fab1e8c-0252-4174-bc61-1475ad8cdecb
  *               user_id:
- *                  type: string
- *                  example: kchb1e8c-0252-4174-bc61-1475ad8cdecb
+ *                 type: string
+ *                 example: kchb1e8c-0252-4174-bc61-1475ad8cdecb
  *     responses:
  *       200:
  *         description: API key regenerated successfully
@@ -236,9 +285,32 @@ router.post("/revoke", validateRevoke, revokeApiKeyController);
  *                       type: string
  *                       format: date-time
  *                       example: 2025-11-13T17:46:04.264Z
- *                     message:
- *                       type: string
- *                       example: API key successfully regenerated
+ *       400:
+ *         description: Bad Request — invalid app_id or user_id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Invalid app_id or user_id
+ *       500:
+ *         description: Internal Server Error — unexpected failure during regeneration
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
 router.post("/regenerate", regenerateApiKeyController);
 
