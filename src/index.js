@@ -1,9 +1,13 @@
 import "dotenv/config";
 import express from "express";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
 import { corsConfig } from "./config/cors.config.js";
 import { env } from "./config/env.config.js";
-import authRouter from "./routes/auth.route.js";
+import authRoutes from "./routes/auth.route.js";
+import analyticsRoutes from "./routes/analytics.route.js";
+import { swaggerSpec } from "./config/swagger.config.js";
+import { apiKeyManagementRateLimiter } from "./config/rateLimit.config.js";
 
 const app = express();
 const PORT = env.PORT;
@@ -12,7 +16,10 @@ app.use(helmet());
 app.use(express.json());
 app.use(corsConfig());
 
-app.use("/api/auth", authRouter);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use("/api/auth", apiKeyManagementRateLimiter, authRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -38,3 +45,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Analytics API server running on port ${PORT}`);
   console.log(`📊 Environment: ${env.NODE_ENV || "development"}`);
 });
+
+export default app;
