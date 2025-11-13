@@ -30,7 +30,7 @@ export class ApiKeyUtils {
    * @return {string} The prefix of the API key
    */
   static extractApiKeyPrefix(apiKey) {
-    return apiKey.substring(0, 12);
+    return apiKey.substring(0, 15);
   }
 
   /**
@@ -40,6 +40,7 @@ export class ApiKeyUtils {
    */
   static maskApiKey(apiKey) {
     const prefix = this.extractApiKeyPrefix(apiKey);
-    return `${prefix}***************************`;
+    const maskLength = apiKey.length - prefix.length;
+    return `${prefix}${"*".repeat(maskLength)}`;
   }
 }

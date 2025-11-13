@@ -2,12 +2,16 @@
   "name": "alter_office_assessment",
   "version": "1.0.0",
   "description": "Analytics management",
-  "main": "index.js",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --coverage --detectOpenHandles --forceExit",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --watch",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest src/tests/unit --coverage",
+    "test:integration": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest src/tests/integration --coverage",
+    "test:performance": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest src/tests/performance"
   },
   "author": "Saikiran",
   "license": "ISC",
@@ -23,6 +27,37 @@
     "pg": "^8.16.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.11",
+    "supertest": "^7.1.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {},
+    "testMatch": [
+      "**/src/**/*.test.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/coverage/"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!**/node_modules/**",
+      "!**/coverage/**",
+      "!**/tests/**",
+      "!jest.config.js",
+      "!server.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/tests/setup.js"
+    ],
+    "testTimeout": 10000,
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
   }
 }

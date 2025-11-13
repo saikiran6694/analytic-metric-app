@@ -15,19 +15,22 @@ export class ApiKeyService {
     try {
       await client.query("BEGIN");
 
-      // Check if app already exists for this user
-      const existingApp = await client.query("SELECT id FROM apps WHERE user_id = $1 AND app_url = $2", [userId, appUrl]);
+      // Normalize URL to prevent duplicates like `https://testapp.com/`
+      const normalizedUrl = appUrl.trim().toLowerCase();
+
+      // Check for existing app for the same user
+      const existingApp = await client.query("SELECT id FROM apps WHERE user_id = $1 AND LOWER(app_url) = $2", [userId, normalizedUrl]);
 
       if (existingApp.rows.length > 0) {
         throw new Error("App with this URL already registered for this user");
       }
 
-      // Create app
+      // Insert new app
       const appResult = await client.query(
-        `INSERT INTO apps (app_name, app_url, user_id) 
-         VALUES ($1, $2, $3) 
-         RETURNING id, app_name, app_url, created_at`,
-        [appName, appUrl, userId]
+        `INSERT INTO apps (app_name, app_url, user_id)
+       VALUES ($1, $2, $3)
+       RETURNING id, app_name, app_url, created_at`,
+        [appName, normalizedUrl, userId]
       );
 
       const app = appResult.rows[0];
@@ -39,8 +42,8 @@ export class ApiKeyService {
 
       // Store hashed API key
       await client.query(
-        `INSERT INTO api_keys (app_id, key_hash, key_prefix, expires_at) 
-         VALUES ($1, $2, $3, NOW() + INTERVAL '1 year')`,
+        `INSERT INTO api_keys (app_id, key_hash, key_prefix, expires_at)
+       VALUES ($1, $2, $3, NOW() + INTERVAL '1 year')`,
         [app.id, keyHash, keyPrefix]
       );
 
@@ -50,7 +53,7 @@ export class ApiKeyService {
         app_id: app.id,
         app_name: app.app_name,
         app_url: app.app_url,
-        api_key: apiKey, // Only returned once
+        api_key: apiKey, // Only shown once
         created_at: app.created_at,
       };
     } catch (error) {
@@ -94,7 +97,7 @@ export class ApiKeyService {
       app_id: appId,
       app_name: key.app_name,
       app_url: key.app_url,
-      key_prefix: key.key_prefix + "***************************",
+      key_prefix: ApiKeyUtils.maskApiKey(key.key_prefix),
       is_active: key.is_active,
       created_at: key.created_at,
       expires_at: key.expires_at,

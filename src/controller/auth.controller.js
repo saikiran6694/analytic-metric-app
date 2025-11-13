@@ -45,7 +45,7 @@ export const revokeApiKeyController = async (req, res) => {
 
     const result = await ApiKeyService.revokeApiKey(api_key);
 
-    res.json({
+    res.status(HTTPSTATUS.CREATED).json({
       success: true,
       message: "API key revoked successfully",
       data: result,
@@ -86,7 +86,9 @@ export const getApiKeyController = async (req, res) => {
   } catch (error) {
     console.error("Get API key error:", error);
 
-    if (error.message.includes("No active API key")) {
+    console.log("error : ", error.message);
+
+    if (error.message.includes("No active API key found for this app")) {
       return res.status(HTTPSTATUS.NOT_FOUND).json({
         success: false,
         error: error.message,
