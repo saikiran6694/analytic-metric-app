@@ -1,7 +1,6 @@
 import swaggerJSDoc from "swagger-jsdoc";
 import path from "path";
 import { fileURLToPath } from "url";
-import { env } from "./env.config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,7 +15,7 @@ const options = {
     },
     servers: [
       {
-        url: `http://localhost:${env.PORT}/api`,
+        url: `https://analytic-metric-app.onrender.com/api`,
         description: "Local development server",
       },
     ],
