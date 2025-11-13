@@ -8,22 +8,48 @@ export class EventService {
    * @returns {Promise<Object | null>} The event details or null if not implemented
    */
   static async collectEvent(appId, eventData) {
-    const { event, url, referrer, device, ipAddress, timestamp, metadata, session_id, user_id } = eventData;
+    const {
+      event,
+      url = null,
+      referrer = null,
+      device = null,
+      ipAddress = null,
+      timestamp = new Date(),
+      metadata = {},
+      session_id = null,
+      user_id = null,
+    } = eventData;
+
+    if (!appId) throw new Error("Missing appId");
+    if (!event) throw new Error("Missing event name");
 
     try {
       const result = await pool.query(
-        `INSERT INTO events 
-            (app_id, event_type, url, referrer, device, ip_address, timestamp, metadata, session_id, user_id) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, app_id, event_type, timestamp`,
-        [appId, event, url, referrer, device, ipAddress, timestamp, metadata, session_id, user_id]
+        `
+      INSERT INTO events (
+        app_id,
+        event_type,
+        url,
+        referrer,
+        device,
+        ip_address,
+        timestamp,
+        metadata,
+        session_id,
+        user_id
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      RETURNING id, app_id, event_type, timestamp;
+      `,
+        [appId, event, url, referrer, device, ipAddress ? ipAddress : null, timestamp, metadata, session_id, user_id]
       );
 
-      //   Trigger summary update ( be done asynchronously)
-      this.updateEventSummary(appId, event, timestamp || new Date()).catch((err) => console.error("Error updating summary:", err));
+      // Fire summary update asynchronously
+      this.updateEventSummary(appId, event, timestamp).catch((err) => console.error("⚠️ Error updating summary:", err.message));
 
       return result.rows[0];
     } catch (error) {
-      console.error("Error collecting event:", error);
+      console.error("❌ Error collecting event:", error.message);
       throw new Error("Failed to collect event");
     }
   }
