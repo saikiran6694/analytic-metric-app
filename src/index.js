@@ -38,3 +38,5 @@ app.listen(PORT, () => {
   console.log(`🚀 Analytics API server running on port ${PORT}`);
   console.log(`📊 Environment: ${env.NODE_ENV || "development"}`);
 });
+
+export default app;
