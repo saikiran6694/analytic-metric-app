@@ -99,7 +99,7 @@ curl -X POST http://localhost:3000/api/auth/register \
   "success": true,
   "data": {
     "app_id": "f47ac10b-...",
-    "api_key": "ak_live_ABC...",  // Save this!
+    "api_key": "sbx_ABC...",  // Save this!
     "created_at": "2024-02-20T12:00:00.000Z"
   }
 }
